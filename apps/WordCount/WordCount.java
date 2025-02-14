@@ -39,11 +39,21 @@ public class WordCount
     });
     DataSet<Tuple2<String, Integer>> tokenized = filtered.map(new Tokenizer());
     
-    DataSet<Tuple2<String, Integer>> counts = tokenized.groupBy(new int[] { 0 }).sum(1);
+    // groupBy(0) refers to group by the first tuple element
+    // It is possible to perform operations using .
+    // It is summing tuple field 1.
+    DataSet<Tuple2<String, Integer>> counts = tokenized.groupBy(0).sum(1);
+    
+    //DataSet<Tuple2<String, Integer>> counts = tokenized.groupBy(new int[] { 0 }).sum(1);
     if (params.has("output"))
     {
+      // The next writes the counts DataSet to a csv
+      // Each row in the csv is configured to be terminated by new line, and fields terminated by space.
       counts.writeAsCsv(params.get("output"), "\n", " ");
       
+      // Executing the program
+      // Trigger for execution. If this method is not called, no operation will be performed.
+      // If it is not called, the program will complete without doing anything 
       env.execute("WordCount Example");
     }
   }
